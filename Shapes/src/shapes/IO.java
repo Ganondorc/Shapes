@@ -1,7 +1,7 @@
 /*
  * Name: Michael Frake
- * Project: CMSC 335 Project 1
- * Date: Aug 29, 2021
+ * Project: CMSC 335 Project 2
+ * Date: Sep 14, 2021
  * Description: main input/output mechanism
  */
 
@@ -35,100 +35,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 
 public class IO extends Application {
-	/*
-		public static void main(String[] args) {
-			System.out.print("*********Welcome to the Java OO Shapes Program **********\r\n"
-					+ "Select from the menu below:\r\n" + "1. Construct a Circle\r\n" + "2. Construct a Rectangle\r\n"
-					+ "3. Construct a Square\r\n" + "4. Construct a Triangle\r\n" + "5. Construct a Sphere\r\n"
-					+ "6. Construct a Cube\r\n" + "7. Construct a Cone\r\n" + "8. Construct a Cylinder\r\n"
-					+ "9. Construct a Torus\r\n" + "10. Exit the program\r\n\n");
-			while (true) {
-				System.out.println("Enter an integer:");
-				Scanner in = null;
-				in = new Scanner(System.in);
-				int response = getInt(in);
-				switch (response) {
-				// 2D
-				case 1:
-					System.out.println("You have selected a circle.\nWhat is the radius?");
-					double circleRadius = getDouble(in);
-					Circle selectedCircle;
-					selectedCircle = new Circle(circleRadius);
-					System.out.println("The area of the circle is " + selectedCircle.getArea() + ".\n");
-					break;
-				case 2:
-					System.out.println("You have selected a rectangle.\nWhat is the length?");
-					double rectangleLength = getDouble(in);
-					System.out.println("What is the width?");
-					double width = getDouble(in);
-					Rectangle selectedRect = new Rectangle(rectangleLength, width);
-					System.out.println("The area of the rectangle is " + selectedRect.getArea() + ".\n");
-					break;
-				case 3:
-					System.out.println("You have selected a square.\nWhat is length of a side?");
-					double squareLength = getDouble(in);
-					Square selectedSquare = new Square(squareLength);
-					System.out.println("The area of the square is " + selectedSquare.getArea() + ".\n");
-					break;
-				case 4:
-					System.out.println("You have selected a triangle.\nWhat is the length of side 'a'?");
-					double a = getDouble(in);
-					System.out.println("Now enter the length of side 'b'.");
-					double b = getDouble(in);
-					System.out.println("Now enter the length of side 'c'.");
-					double c = getDouble(in);
-					Triangle selectedTriangle = new Triangle(a, b, c);
-					System.out.println("The area of the triangle is " + selectedTriangle.getArea() + ".\n");
-					break;
-				// 3D
-				case 5:
-					System.out.println("You have selected a sphere.\nWhat is the radius?");
-					double sphereRadius = getDouble(in);
-					Sphere selectedSphere = new Sphere(sphereRadius);
-					System.out.println("The volume of the sphere is " + selectedSphere.getVolume() + ".\n");
-					break;
-				case 6:
-					System.out.println("You have selected a cube.\nWhat is the length of a side?");
-					double cubeLength = getDouble(in);
-					Cube selectedCube = new Cube(cubeLength);
-					System.out.println("The volume of the cube is " + selectedCube.getVolume() + ".\n");
-					break;
-				case 7:
-					System.out.println("You have selected a cone.\nWhat is the radius of the base?");
-					double coneRadius = getDouble(in);
-					System.out.println("What is the height?");
-					double coneHeight = getDouble(in);
-					Cone selectedCone = new Cone(coneRadius, coneHeight);
-					System.out.println("The volume of the cone is " + selectedCone.getVolume() + ".\n");
-					break;
-				case 8:
-					System.out.println("You have selected a cylinder.\nWhat is the radius of the base?");
-					double cylinderRadius = getDouble(in);
-					System.out.println("What is the height?");
-					double cylinderHeight = getDouble(in);
-					Cylinder selectedCylinder = new Cylinder(cylinderRadius, cylinderHeight);
-					System.out.println("The volume of the cylinder is " + selectedCylinder.getVolume() + ".\n");
-					break;
-				case 9:
-					System.out.println("You have selected a torus.\nWhat is the minor radius?");
-					double minorRadius = getDouble(in);
-					System.out.println("What is the major radius?");
-					double majorRadius = getDouble(in);
-					Torus selectedTorus = new Torus(minorRadius, majorRadius);
-					System.out.println("The volume of the torus is " + selectedTorus.getVolume() + ".\n");
-					break;
-				case 10:
-					System.out.println(
-							"Thank you for exploring shapes! The current date and time are " + LocalDateTime.now());
-					in.close();
-					System.exit(0);
-				default:
-					System.out.println("That option does not exist. Please try again.");
-				}
-			}
-		}
-	*/
-
 	final String[] TwoDShapes = { "Circle", "Rectangle", "Square", "Triangle" };
 	final String[] ThreeDShapes = { "Cone", "Cube", "Cylinder", "Sphere", "Torus" };
 	private static JFrame frame = new JFrame("Shapes");
@@ -140,7 +46,6 @@ public class IO extends Application {
 
 	private static void createGUI() {
 		// Create and set up the window.
-		// frame.setPreferredSize(new Dimension(300, 400));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Create 1and set up the content pane.
@@ -150,7 +55,6 @@ public class IO extends Application {
 
 		// Display the window.
 		frame.pack();
-		// frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
@@ -168,28 +72,21 @@ public class IO extends Application {
 		final JLabel extraInfo = new JLabel("If the shape is 3D, you can click the shape to rotate it randomly.");
 		welcome.add(welcomeLabel);
 		welcome.add(extraInfo);
+		
 		JPanel dropdown = new JPanel();
 		String[] shapes = Stream.concat(Arrays.stream(TwoDShapes), Arrays.stream(ThreeDShapes)).toArray(String[]::new);
 		final JComboBox<String> shapesDropdown = new JComboBox<String>(shapes);
 		dropdown.add(shapesDropdown);
+		
 		final JPanel params = new JPanel();
 		final JPanel drawingArea = new JPanel();
 		final JPanel details = new JPanel();
+		
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(welcome)
 						.addComponent(dropdown).addComponent(params).addComponent(drawingArea).addComponent(details)));
 		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(welcome).addComponent(dropdown)
 				.addComponent(params).addComponent(drawingArea).addComponent(details));
-		// c.ipady = 0;
-
-		// c.fill = GridBagConstraints.NONE;
-		// c.anchor = GridBagConstraints.WEST;
-		/*c = new GridBagConstraints();
-		c.ipady = 10;
-		c.ipadx = 10;
-		c.anchor = GridBagConstraints.CENTER;
-		c.fill = GridBagConstraints.NONE;*/
-		// c.fill = GridBagConstraints.HORIZONTAL;
 
 		shapesDropdown.addActionListener(new ActionListener() {
 			@Override
@@ -218,7 +115,6 @@ public class IO extends Application {
 					public void actionPerformed(ActionEvent e) {
 						final JPanel drawing = new JPanel();
 						ArrayList<Double> shapeParams = new ArrayList<Double>();
-						// System.out.println(params.getComponentCount());
 						for (int i = 0; i < params.getComponentCount(); i++) {
 							if (params.getComponent(i).getClass().getSimpleName().equals("JPanel")) {
 								JTextField thisText = ((JTextField) ((JPanel) params.getComponent(i)).getComponent(1));
@@ -227,7 +123,6 @@ public class IO extends Application {
 									return;
 								}
 								shapeParams.add(Double.parseDouble(thisText.getText()));
-								// tabbers.add(thisText);
 							}
 						}
 						// boolean that tells us whether parameters were set successfully
@@ -256,7 +151,6 @@ public class IO extends Application {
 
 									});
 								}
-								// drawingArea.add(new JLabel("Test"));
 								drawingArea.removeAll();
 								drawingArea.validate();
 								drawingArea.add(drawing);
@@ -277,7 +171,7 @@ public class IO extends Application {
 				params.add(go);
 				
 				tabbers.add(go);
-				// tabbers.forEach(tabber -> System.out.println(tabber.getClass().getSimpleName()));
+				// have last text field activate go on enter pressed
 				((JTextField) tabbers.get(tabbers.size()-2)).addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -302,56 +196,17 @@ public class IO extends Application {
 		shapesDropdown.requestFocus();
 		for(ActionListener a: shapesDropdown.getActionListeners()) {
 		    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {
-		          // trigger shapesdropdown event
+		          // trigger shapesdropdown event to display initial circle (since it's first in dropdown) parameters
 		    });
 		}
 		
-		/*content.add(welcomePanel);
-		content.add(dropdown);
-		content.add(params);*/
 		frame.add(content);
 	}
 
 	public JPanel getContent() {
 		return content;
 	}
-	/*
-	private static int getInt(Scanner in) {
-		int nextInt = 0;
-		while (true) {
-			try {
-				String response = in.next();
-				nextInt = Integer.parseInt(response);
-				if (nextInt < 0) {
-					throw new Exception();
-				}
-				return nextInt;
-			} catch (Exception e) {
-				System.out.println("Invalid output. Please enter a natural number (positive integer):");
-				continue;
-			}
-		}
-	}
 	
-	private static double getDouble(Scanner in) {
-		double nextDouble = 0;
-		while (true) {
-			try {
-				String response = in.next();
-				nextDouble = Double.parseDouble(response);
-				if (nextDouble < 0) {
-					System.out.println("Double not positive. Please enter a valid double:");
-					continue;
-				}
-				return nextDouble;
-			} catch (Exception e) {
-				System.out.println("Invalid output. Please enter a valid double:");
-				continue;
-			}
-		}
-	}
-	*/
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		SwingUtilities.invokeLater(new Runnable() {

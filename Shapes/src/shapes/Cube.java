@@ -1,16 +1,17 @@
-package shapes;
 /*
  * Name: Michael Frake
- * Project: CMSC 3 Project 1
- * Date: Aug 25, 2021
+ * Project: CMSC 335 Project 2
+ * Date: Sep 14, 2021
  * Description: a standard geometric cube and volume method
  */
+
+package shapes;
 
 import java.util.ArrayList;
 
 public class Cube extends ThreeDimensionalShape {
 	public double length;
-	
+
 	public Cube(double length) {
 		this.length = length;
 		this.volume = getVolume();
@@ -18,11 +19,11 @@ public class Cube extends ThreeDimensionalShape {
 		paramNames.add("length");
 		maxMultiplier = 0.6;
 	}
-	
+
 	public Cube() {
 		this(0);
 	}
-	
+
 	@Override
 	public boolean setParameters(ArrayList<Double> params) {
 		if (params.size() != paramSize)
@@ -31,7 +32,7 @@ public class Cube extends ThreeDimensionalShape {
 		this.volume = getVolume();
 		return true;
 	}
-	
+
 	public double getVolume() {
 		return Math.pow(length, 3);
 	}

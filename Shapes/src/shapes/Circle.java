@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 /*
  * Name: Michael Frake
- * Project: CMSC 335 Project 1
- * Date: Aug 25, 2021
+ * Project: CMSC 335 Project 2
+ * Date: Sep 14, 2021
  * Description: a standard geometric circle and area method
  */
 

@@ -1,15 +1,16 @@
+/*
+ * Name: Michael Frake
+ * Project: CMSC 335 Project 2
+ * Date: Sep 14, 2021
+ * Description: used to restrict jtext elements to a double between min and max
+ */
+
 package shapes;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
-/*
- * Name: Michael Frake
- * Project: CMSC 3 Project 1
- * Date: Sep 13, 2021
- * Description: 
- */
 
 public class DoubleFilter extends DocumentFilter {
 	

@@ -1,9 +1,10 @@
 /*
  * Name: Michael Frake
- * Project: CMSC 3 Project 1
+ * Project: CMSC 335 Project 2
  * Date: Sep 14, 2021
- * Description: 
+ * Description: simple traversal policy for switching tab focus
  */
+
 package shapes;
 
 import java.awt.Component;
@@ -22,8 +23,6 @@ class SimpleFocusTraversalPolicy extends FocusTraversalPolicy {
 
 	public SimpleFocusTraversalPolicy(List<? extends Component> list) {
 		order = list;
-		//System.out.println(order.size());
-		//order.forEach(tabber -> System.out.println(tabber.getClass().getSimpleName()));
 	}
 	
 	@Override

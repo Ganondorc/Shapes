@@ -1,14 +1,14 @@
+/*
+ * Name: Michael Frake
+ * Project: CMSC 335 Project 2
+ * Date: Sep 14, 2021
+ * Description: a simple two dimensional triangle
+ */
+
 package shapes;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-/*
- * Name: Michael Frake
- * Project: CMSC 335 Project 1
- * Date: Aug 25, 2021
- * Description: 
- */
 
 public class Triangle extends TwoDimensionalShape {
 	public double a;

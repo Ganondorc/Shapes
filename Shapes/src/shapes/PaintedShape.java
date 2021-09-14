@@ -1,7 +1,7 @@
 /*
  * Name: Michael Frake
- * Project: CMSC 3 Project 1
- * Date: Sep 13, 2021
+ * Project: CMSC 335 Project 2
+ * Date: Sep 14, 2021
  * Description: generates the jpanel or jfxpanel for a given shape
  */
 
@@ -9,14 +9,11 @@ package shapes;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -130,7 +127,6 @@ public class PaintedShape {
 				element.getTransforms().setAll(centered, rotateX, rotateY, rotateZ);
 			}
 		});
-		// content.setFill(Color.ALICEBLUE);
 		final JFXPanel fxPanel = new JFXPanel();
 		fxPanel.setScene(content);
 		return fxPanel;
@@ -139,146 +135,5 @@ public class PaintedShape {
 	public Object getPanel() {
 		return panel;
 	}
-
-	public static void main(String[] args) {
-		// final CountDownLatch latch = new CountDownLatch(1);
-		JFrame frame = new JFrame();
-		frame.setLayout(new GridBagLayout());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 300);
-		frame.setVisible(true);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new JFXPanel(); // initializes JavaFX environment
-				JFXPanel panel = (JFXPanel) new PaintedShape(new shapes.Cone(20, 50)).getPanel();
-				JFXPanel panel1 = (JFXPanel) new PaintedShape(new shapes.Cone(2, 5)).getPanel();
-				JFXPanel panel2 = (JFXPanel) new PaintedShape(new shapes.Cone(60, 150)).getPanel();
-				// panel.setPreferredSize(new Dimension(200, 200));
-				// panel.setLayout(new GridBagLayout());
-				Thread t0 = new Thread() {
-					public void run() {
-						frame.getContentPane().removeAll();
-						frame.add(panel);
-						frame.repaint();
-					}
-				};
-				t0.start();
-				try {
-					t0.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Thread t = new Thread() {
-					public void run() {
-						frame.getContentPane().removeAll();
-						frame.add(panel1);
-						frame.repaint();
-					}
-				};
-				t.start();
-				try {
-					t.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Thread t1 = new Thread() {
-					public void run() {
-						frame.getContentPane().removeAll();
-						frame.add(panel2);
-						frame.repaint();
-					}
-				};
-				t1.start();
-				try {
-					t1.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-
-	}
-
-	/*public class DrawnCone extends Group {
-	
-	public DrawnCone(Cone myCone) {
-		int rounds = 360;
-		int r1 = (int) myCone.radius;
-		int r2 = (int) myCone.radius;
-		int h = (int) myCone.height;
-		Group cone = new Group();
-		PhongMaterial material = new PhongMaterial();
-	
-		float[] points = new float[rounds * 12];
-		float[] textCoords = { 0.5f, 0, 0, 1, 1, 1 };
-		int[] faces = new int[rounds * 12];
-	
-		for (int i = 0; i < rounds; i++) {
-			int index = i * 12;
-			// 0
-			points[index] = (float) Math.cos(Math.toRadians(i)) * r2;
-			points[index + 1] = (float) Math.sin(Math.toRadians(i)) * r2;
-			points[index + 2] = h / 2;
-			// 1
-			points[index + 3] = (float) Math.cos(Math.toRadians(i)) * r1;
-			points[index + 4] = (float) Math.sin(Math.toRadians(i)) * r1;
-			points[index + 5] = -h / 2;
-			// 2
-			points[index + 6] = (float) Math.cos(Math.toRadians(i + 1)) * r1;
-			points[index + 7] = (float) Math.sin(Math.toRadians(i + 1)) * r1;
-			points[index + 8] = -h / 2;
-			// 3
-			points[index + 9] = (float) Math.cos(Math.toRadians(i + 1)) * r2;
-			points[index + 10] = (float) Math.sin(Math.toRadians(i + 1)) * r2;
-			points[index + 11] = h / 2;
-		}
-	
-		for (int i = 0; i < rounds; i++) {
-			int index = i * 12;
-			faces[index] = i * 4;
-			faces[index + 1] = 0;
-			faces[index + 2] = i * 4 + 1;
-			faces[index + 3] = 1;
-			faces[index + 4] = i * 4 + 2;
-			faces[index + 5] = 2;
-	
-			faces[index + 6] = i * 4;
-			faces[index + 7] = 0;
-			faces[index + 8] = i * 4 + 2;
-			faces[index + 9] = 1;
-			faces[index + 10] = i * 4 + 3;
-			faces[index + 11] = 2;
-		}
-	
-		TriangleMesh mesh = new TriangleMesh();
-		mesh.getPoints().addAll(points);
-		mesh.getTexCoords().addAll(textCoords);
-		mesh.getFaces().addAll(faces);
-	
-		javafx.scene.shape.Cylinder circle1 = new javafx.scene.shape.Cylinder(r1, 0.1);
-		circle1.setMaterial(material);
-		circle1.setTranslateZ(-h / 2);
-		circle1.setRotationAxis(Rotate.X_AXIS);
-		circle1.setRotate(90);
-	
-		javafx.scene.shape.Cylinder circle2 = new javafx.scene.shape.Cylinder(r2, 0.1);
-		circle2.setMaterial(material);
-		circle2.setTranslateZ(h / 2);
-		circle2.setRotationAxis(Rotate.X_AXIS);
-		circle2.setRotate(90);
-	
-		MeshView meshView = new MeshView();
-		meshView.setMesh(mesh);
-		meshView.setMaterial(material);
-		// meshView.setDrawMode(DrawMode.LINE);
-		cone.getChildren().addAll(meshView);
-		Rotate r3 = new Rotate(90, Rotate.X_AXIS);
-		cone.getTransforms().add(r3);
-		getChildren().addAll(cone);
-	}
-	}*/
-
 }
+
