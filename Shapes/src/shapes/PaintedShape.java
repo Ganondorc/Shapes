@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -21,6 +22,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import org.fxyz.shapes.Cone;
 import org.fxyz.shapes.Torus;
 
 import javafx.embed.swing.JFXPanel;
@@ -35,11 +37,11 @@ import javafx.scene.shape.DrawMode;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
-
 public class PaintedShape {
 	private Object panel;
 	public static Dimension size = new Dimension(200, 200);
 	private Shape shape;
+	private static Scene content;
 	ArrayList<Point> points;
 
 	public PaintedShape(Shape shape) {
@@ -48,7 +50,11 @@ public class PaintedShape {
 			points = ((TwoDimensionalShape) shape).shapePoints();
 			panel = painted2DShapePanel();
 		} else if (shape.getClass().getSuperclass().getSimpleName().equals("ThreeDimensionalShape")) {
-			panel = painted3DShapePanel();
+			try {
+				panel = painted3DShapePanel();
+			} catch (Exception e) {
+				System.out.println(e.toString());
+			}
 		} else {
 			panel = null;
 		}
@@ -77,14 +83,14 @@ public class PaintedShape {
 		};
 	}
 
-	public JFXPanel painted3DShapePanel() {
+	public JFXPanel painted3DShapePanel() throws Exception {
 		String shapeName = shape.getName();
-		Scene content;
 		Node element;
 		Color shapeColor = new Color(0, 0, 0, 0.2);
 		if (shapeName.equals("Cone")) {
-			org.fxyz.shapes.Cone cone = new org.fxyz.shapes.Cone(32, ((shapes.Cone) shape).radius, ((shapes.Cone) shape).height,
-					shapeColor);
+			shapes.Cone coneShape = (shapes.Cone) shape;
+			new Cone();
+			Cone cone = new Cone(32, coneShape.radius, coneShape.height, shapeColor);
 			cone.setEmissiveLightingColor(Color.BLUE);
 			cone.setEmissiveLightingOn(true);
 			cone.setDrawMode(DrawMode.LINE);
@@ -93,7 +99,8 @@ public class PaintedShape {
 			double length = ((shapes.Cube) shape).length;
 			element = new javafx.scene.shape.Box(length, length, length);
 		} else if (shapeName.equals("Cylinder")) {
-			element = new javafx.scene.shape.Cylinder(((shapes.Cylinder) shape).radius, ((shapes.Cylinder) shape).height, 32);
+			element = new javafx.scene.shape.Cylinder(((shapes.Cylinder) shape).radius,
+					((shapes.Cylinder) shape).height, 32);
 		} else if (shapeName.equals("Sphere")) {
 			element = new javafx.scene.shape.Sphere(((shapes.Sphere) shape).radius, 32);
 		} else if (shapeName.equals("Torus")) {
@@ -104,7 +111,8 @@ public class PaintedShape {
 			torus.setEmissiveLightingOn(true);
 			element = torus;
 		} else {
-			return null;
+			System.out.println("Not good.");
+			throw new Exception("Invalid shape.");
 		}
 		Rotate rotateX = new Rotate(30, Rotate.X_AXIS);
 		Rotate rotateY = new Rotate(30, Rotate.Y_AXIS);
@@ -123,9 +131,9 @@ public class PaintedShape {
 			}
 		});
 		// content.setFill(Color.ALICEBLUE);
-		final JFXPanel panel = new JFXPanel();
-		panel.setScene(content);
-		return panel;
+		final JFXPanel fxPanel = new JFXPanel();
+		fxPanel.setScene(content);
+		return fxPanel;
 	}
 
 	public Object getPanel() {
@@ -143,11 +151,52 @@ public class PaintedShape {
 			public void run() {
 				new JFXPanel(); // initializes JavaFX environment
 				JFXPanel panel = (JFXPanel) new PaintedShape(new shapes.Cone(20, 50)).getPanel();
+				JFXPanel panel1 = (JFXPanel) new PaintedShape(new shapes.Cone(2, 5)).getPanel();
+				JFXPanel panel2 = (JFXPanel) new PaintedShape(new shapes.Cone(60, 150)).getPanel();
 				// panel.setPreferredSize(new Dimension(200, 200));
 				// panel.setLayout(new GridBagLayout());
-				frame.add(panel);
-				panel.validate();
-				frame.validate();
+				Thread t0 = new Thread() {
+					public void run() {
+						frame.getContentPane().removeAll();
+						frame.add(panel);
+						frame.repaint();
+					}
+				};
+				t0.start();
+				try {
+					t0.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Thread t = new Thread() {
+					public void run() {
+						frame.getContentPane().removeAll();
+						frame.add(panel1);
+						frame.repaint();
+					}
+				};
+				t.start();
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Thread t1 = new Thread() {
+					public void run() {
+						frame.getContentPane().removeAll();
+						frame.add(panel2);
+						frame.repaint();
+					}
+				};
+				t1.start();
+				try {
+					t1.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 

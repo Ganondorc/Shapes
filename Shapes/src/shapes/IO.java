@@ -12,11 +12,14 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -28,9 +31,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.PlainDocument;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
-
 
 public class IO extends Application {
 	/*
@@ -131,7 +134,6 @@ public class IO extends Application {
 	final String[] ThreeDShapes = { "Cone", "Cube", "Cylinder", "Sphere", "Torus" };
 	private static JFrame frame = new JFrame("Shapes");
 	private final JPanel content = new JPanel();
-	private final JPanel drawingArea = new JPanel();
 
 	public static void main(String[] args) {
 		Application.launch(args);
@@ -160,11 +162,20 @@ public class IO extends Application {
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		final JPanel welcomePanel = new JPanel();
-		final JLabel welcome = new JLabel("Welcome to the Shapes program. Select a shape below to begin.");
-		welcomePanel.add(welcome);
-
+		final JPanel welcome = new JPanel();
+		final JLabel welcomeLabel = new JLabel("Welcome to the Shapes program. Select a shape below to begin.");
+		welcome.add(welcomeLabel);
+		JPanel dropdown = new JPanel();
+		String[] shapes = Stream.concat(Arrays.stream(TwoDShapes), Arrays.stream(ThreeDShapes)).toArray(String[]::new);
+		final JComboBox<String> shapesDropdown = new JComboBox<String>(shapes);
+		dropdown.add(shapesDropdown);
 		final JPanel params = new JPanel();
+		final JPanel drawingArea = new JPanel();
+		layout.setHorizontalGroup(
+				layout.createSequentialGroup().addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(welcome).addComponent(dropdown).addComponent(params).addComponent(drawingArea)));
+		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(welcome).addComponent(dropdown)
+				.addComponent(params).addComponent(drawingArea));
 		// c.ipady = 0;
 
 		// c.fill = GridBagConstraints.NONE;
@@ -175,8 +186,7 @@ public class IO extends Application {
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.NONE;*/
 		// c.fill = GridBagConstraints.HORIZONTAL;
-		String[] shapes = Stream.concat(Arrays.stream(TwoDShapes), Arrays.stream(ThreeDShapes)).toArray(String[]::new);
-		final JComboBox<String> shapesDropdown = new JComboBox<String>(shapes);
+
 		shapesDropdown.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -198,7 +208,7 @@ public class IO extends Application {
 				go.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						drawingArea.removeAll();
+						final JPanel drawing = new JPanel();
 						ArrayList<Double> shapeParams = new ArrayList<Double>();
 						// System.out.println(params.getComponentCount());
 						for (int i = 0; i < params.getComponentCount(); i++) {
@@ -207,23 +217,38 @@ public class IO extends Application {
 										((JTextArea) ((JPanel) params.getComponent(i)).getComponent(1)).getText()));
 							}
 						}
-						// is boolean and tells us whether parameters were set successfully
+						// boolean that tells us whether parameters were set successfully
 						System.out.println("Shape set parameters: " + selectedShape.setParameters(shapeParams));
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
 								new JFXPanel(); // initializes JavaFX environment
-								Component shapePanel = (Component) new PaintedShape(selectedShape).getPanel();
-								drawingArea.add(shapePanel);
+								if (selectedShape.getClass().getSuperclass().getSimpleName()
+										.equals("TwoDimensionalShape")) {
+									Component shapePanel = (Component) new PaintedShape(selectedShape).getPanel();
+									drawing.add(shapePanel);
+								} else {
+									JFXPanel shapePanel = (JFXPanel) new PaintedShape(selectedShape).getPanel();
+									Platform.runLater(() -> {
+										try {
+											SwingUtilities.invokeLater(() -> {
+												drawing.add(shapePanel);
+												frame.pack();
+											});
+
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+
+									});
+								}
 								// drawingArea.add(new JLabel("Test"));
-								// drawingArea.repaint();
-								shapePanel.repaint();
-								shapePanel.validate();
-								drawingArea.repaint();
+								drawingArea.removeAll();
 								drawingArea.validate();
+								drawingArea.add(drawing);
+								drawingArea.repaint();
 								frame.pack();
-								frame.setSize(
-										new Dimension((int) (frame.getSize().getWidth() + PaintedShape.size.getWidth()),
-												(int) (frame.getSize().getHeight() + PaintedShape.size.getHeight())));
+								frame.setSize(new Dimension((int) (frame.getSize().getWidth()),
+										(int) (frame.getSize().getHeight() + PaintedShape.size.getHeight())));
 								frame.setLocationRelativeTo(null);
 							}
 						});
@@ -237,17 +262,9 @@ public class IO extends Application {
 			}
 		});
 
-		JPanel dropdown = new JPanel();
-		dropdown.add(shapesDropdown);
-
 		/*content.add(welcomePanel);
 		content.add(dropdown);
 		content.add(params);*/
-		layout.setHorizontalGroup(layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(welcomePanel)
-						.addComponent(dropdown).addComponent(params).addComponent(drawingArea)));
-		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(welcomePanel).addComponent(dropdown)
-				.addComponent(params).addComponent(drawingArea));
 		frame.add(content);
 	}
 
