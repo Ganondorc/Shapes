@@ -83,7 +83,7 @@ public class PaintedShape {
 		Node element;
 		Color shapeColor = new Color(0, 0, 0, 0.2);
 		if (shapeName.equals("Cone")) {
-			org.fxyz.shapes.Cone cone = new org.fxyz.shapes.Cone(32, ((Cone) shape).radius, ((Cone) shape).height,
+			org.fxyz.shapes.Cone cone = new org.fxyz.shapes.Cone(32, ((shapes.Cone) shape).radius, ((shapes.Cone) shape).height,
 					shapeColor);
 			cone.setEmissiveLightingColor(Color.BLUE);
 			cone.setEmissiveLightingOn(true);
