@@ -210,9 +210,9 @@ public class IO extends Application {
 					JTextField field = new JTextField();
 					field.setColumns(5);
 					tabbers.add(field);
-					field.setToolTipText("Enter a double between 0.0 and " + Double.toString(200.0 * selectedShape.maxMultiplier));
+					field.setToolTipText("Enter a double between 0.0 and " + Double.toString((PaintedShape.size - 5) * selectedShape.maxMultiplier));
 					PlainDocument doc = (PlainDocument) field.getDocument();
-					doc.setDocumentFilter(new DoubleFilter(0, 200.0 * selectedShape.maxMultiplier));
+					doc.setDocumentFilter(new DoubleFilter(0, (PaintedShape.size - 5) * selectedShape.maxMultiplier));
 					param.add(field);
 					params.add(param);
 				}
@@ -273,7 +273,7 @@ public class IO extends Application {
 								drawingArea.repaint();
 								frame.pack();
 								frame.setSize(new Dimension((int) (frame.getSize().getWidth()),
-										(int) (frame.getSize().getHeight() + PaintedShape.size.getHeight())));
+										(int) (frame.getSize().getHeight() + PaintedShape.sizeDim.getHeight())));
 								frame.setLocationRelativeTo(null);
 							}
 						});

@@ -19,7 +19,7 @@ public class Cylinder extends ThreeDimensionalShape {
 		paramSize = 2;
 		paramNames.add("radius");
 		paramNames.add("height");
-		maxMultiplier = 0.5;
+		maxMultiplier = 0.4;
 	}
 	
 	public Cylinder() {

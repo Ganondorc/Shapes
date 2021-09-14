@@ -38,7 +38,8 @@ import javafx.scene.transform.Translate;
 
 public class PaintedShape {
 	private Object panel;
-	public static Dimension size = new Dimension(205, 205);
+	public static final int size = 205;
+	public static final Dimension sizeDim = new Dimension(size, size);
 	private Shape shape;
 	private static Scene content;
 	ArrayList<Point> points;
@@ -61,14 +62,14 @@ public class PaintedShape {
 
 	@SuppressWarnings("serial")
 	public JPanel painted2DShapePanel() {
-		final Point offset = new Point((int) (size.getWidth() / 2), (int) (size.getHeight() / 2));
+		final Point offset = new Point((int) (sizeDim.getWidth() / 2), (int) (sizeDim.getHeight() / 2));
 		return new JPanel() {
 
 			@Override
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				setPreferredSize(size);
-				setMinimumSize(size);
+				setPreferredSize(sizeDim);
+				setMinimumSize(sizeDim);
 				Border border = BorderFactory.createLineBorder(java.awt.Color.BLACK);
 				Border margin = new EmptyBorder(10, 10, 10, 10);
 				setBorder(new CompoundBorder(border, margin));
@@ -116,7 +117,7 @@ public class PaintedShape {
 		Rotate rotateX = new Rotate(30, Rotate.X_AXIS);
 		Rotate rotateY = new Rotate(30, Rotate.Y_AXIS);
 		Rotate rotateZ = new Rotate(0, Rotate.Z_AXIS);
-		Translate centered = new Translate(size.getWidth() / 2, size.getHeight() / 2, 0);
+		Translate centered = new Translate(sizeDim.getWidth() / 2, sizeDim.getHeight() / 2, 0);
 		element.getTransforms().addAll(centered, rotateX, rotateY, rotateZ);
 
 		content = new Scene(new Group(element), 200, 200, true, SceneAntialiasing.BALANCED);
