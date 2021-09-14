@@ -32,7 +32,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 
 
-
 public class IO extends Application {
 	/*
 		public static void main(String[] args) {
