@@ -12,7 +12,6 @@ import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -39,7 +38,7 @@ import javafx.scene.transform.Translate;
 
 public class PaintedShape {
 	private Object panel;
-	public static Dimension size = new Dimension(200, 200);
+	public static Dimension size = new Dimension(205, 205);
 	private Shape shape;
 	private static Scene content;
 	ArrayList<Point> points;

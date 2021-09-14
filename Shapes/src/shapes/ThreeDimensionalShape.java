@@ -16,4 +16,9 @@ public class ThreeDimensionalShape extends Shape {
 	public double getVolume() {
 		return volume;
 	}
+	
+	@Override
+	public double getAreaOrVolume() {
+		return getVolume();
+	}
 }

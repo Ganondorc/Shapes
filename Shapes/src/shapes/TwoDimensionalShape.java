@@ -24,4 +24,9 @@ public class TwoDimensionalShape extends Shape {
 	public ArrayList<Point> shapePoints() {
 		return null;
 	}
+	
+	@Override
+	public double getAreaOrVolume() {
+		return getArea();
+	}
 }

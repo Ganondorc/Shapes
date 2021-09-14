@@ -12,6 +12,14 @@ import javax.swing.text.DocumentFilter;
  */
 
 public class DoubleFilter extends DocumentFilter {
+	
+	private double min, max;
+	
+	public DoubleFilter(double min, double max) {
+		this.min = min;
+		this.max = max;
+	}
+	
 	@Override
 	public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
 			throws BadLocationException {
@@ -31,8 +39,8 @@ public class DoubleFilter extends DocumentFilter {
 	// doubles are composed of either integers or periods
 	private boolean test(String text) {
 		try {
-			Double.parseDouble(text);
-			if (text.length() < 7)
+			double d = Double.parseDouble(text);
+			if (text.length() < 7 && d < max && d > min)
 			return true;
 		} catch (NumberFormatException e) {
 			if (text.equals("")) return true;

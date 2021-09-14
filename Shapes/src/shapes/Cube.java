@@ -16,6 +16,7 @@ public class Cube extends ThreeDimensionalShape {
 		this.volume = getVolume();
 		paramSize = 1;
 		paramNames.add("length");
+		maxMultiplier = 0.6;
 	}
 	
 	public Cube() {

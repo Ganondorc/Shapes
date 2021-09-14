@@ -19,6 +19,7 @@ public class Torus extends ThreeDimensionalShape {
 		paramSize = 2;
 		paramNames.add("minor radius");
 		paramNames.add("major radius");
+		maxMultiplier = 0.25;
 	}
 	
 	public Torus() {

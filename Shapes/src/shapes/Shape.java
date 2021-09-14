@@ -13,6 +13,7 @@ public class Shape {
 	public int numberOfDimensions;
 	public int paramSize;
 	public ArrayList<String> paramNames = new ArrayList<String>();
+	public double maxMultiplier = 1.0;
 	
 	public String getName() {
 		return this.getClass().getSimpleName();
@@ -42,5 +43,9 @@ public class Shape {
 	
 	public boolean setParameters(ArrayList<Double> params) {
 		return false;
+	}
+	
+	public double getAreaOrVolume() {
+		return 0;
 	}
 }

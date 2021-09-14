@@ -18,6 +18,7 @@ public class Circle extends TwoDimensionalShape {
 		paramSize = 1;
 		paramNames.clear();
 		paramNames.add("radius");
+		maxMultiplier = 0.5;
 	}
 
 	public Circle() {

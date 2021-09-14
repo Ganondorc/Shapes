@@ -19,6 +19,7 @@ public class Cone extends ThreeDimensionalShape {
 		paramSize = 2;
 		paramNames.add("radius");
 		paramNames.add("height");
+		maxMultiplier = 0.35;
 	}
 	
 	public Cone() {

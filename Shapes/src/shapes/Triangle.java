@@ -23,6 +23,7 @@ public class Triangle extends TwoDimensionalShape {
 		paramSize = 3;
 		paramNames.clear();
 		paramNames.addAll(Arrays.asList("a","b","c"));
+		maxMultiplier = 0.85;
 	}
 
 	public Triangle() {

@@ -17,6 +17,7 @@ public class Sphere extends ThreeDimensionalShape {
 		this.volume = getVolume();
 		paramSize = 1;
 		paramNames.add("radius");
+		maxMultiplier = 0.45;
 	}
 	
 	public Sphere() {
