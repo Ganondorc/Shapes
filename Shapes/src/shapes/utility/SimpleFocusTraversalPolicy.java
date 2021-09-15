@@ -5,7 +5,7 @@
  * Description: simple traversal policy for switching tab focus
  */
 
-package shapes;
+package shapes.utility;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -13,7 +13,7 @@ import java.awt.FocusTraversalPolicy;
 import java.util.Arrays;
 import java.util.List;
 
-class SimpleFocusTraversalPolicy extends FocusTraversalPolicy {
+public class SimpleFocusTraversalPolicy extends FocusTraversalPolicy {
 	private final List<? extends Component> order;
 
 	public SimpleFocusTraversalPolicy(Component... arrays) {

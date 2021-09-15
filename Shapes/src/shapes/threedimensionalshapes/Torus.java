@@ -5,9 +5,13 @@
  * Description: a classic three-dimensional Torus, or doughnut as it is colloquially referred to as
  */
 
-package shapes;
+package shapes.threedimensionalshapes;
 
 import java.util.ArrayList;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.shape.DrawMode;
 
 public class Torus extends ThreeDimensionalShape {
 	public double minorRadius; // radius of the circle that comprises the "dough" part of the doughnut
@@ -22,11 +26,11 @@ public class Torus extends ThreeDimensionalShape {
 		paramNames.add("major radius");
 		maxMultiplier = 0.25;
 	}
-	
+
 	public Torus() {
 		this(0, 0);
 	}
-	
+
 	@Override
 	public boolean setParameters(ArrayList<Double> params) {
 		if (params.size() != paramSize)
@@ -38,6 +42,15 @@ public class Torus extends ThreeDimensionalShape {
 	}
 
 	public double getVolume() {
-		return (2 * Math.PI * majorRadius) * (Math.PI * Math.pow(minorRadius, 2)); // circumference of major times area of minor
+		return (2 * Math.PI * majorRadius) * (Math.PI * Math.pow(minorRadius, 2)); // circumference of major times area
+																					// of minor
+	}
+
+	public Group getFXGroup() {
+		org.fxyz.shapes.Torus torus = new org.fxyz.shapes.Torus(32, 32, majorRadius, minorRadius, shapeColor);
+		torus.setDrawMode(DrawMode.LINE);
+		Node element = torus;
+		group = new Group(element);
+		return group;
 	}
 }

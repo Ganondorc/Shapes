@@ -5,24 +5,21 @@
  * Description: a classic two-dimensional shape
  */
 
-package shapes;
-import java.awt.Point;
-import java.util.ArrayList;
+package shapes.twodimensionalshapes;
+
+import shapes.Shape;
 
 public class TwoDimensionalShape extends Shape {
 	public double area;
 	
+	
 	public TwoDimensionalShape() {
-		this.numberOfDimensions = 2;
+		this.dimensionSize = 2;
 		paramNames.add("side");
 	}
 	
 	public double getArea() {
 		return area;
-	}
-	
-	public ArrayList<Point> shapePoints() {
-		return null;
 	}
 	
 	@Override

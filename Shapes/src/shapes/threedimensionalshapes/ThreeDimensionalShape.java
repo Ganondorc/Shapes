@@ -5,13 +5,17 @@
  * Description: a classic three-dimensional shape
  */
 
-package shapes;
+package shapes.threedimensionalshapes;
+
+import javafx.scene.paint.Color;
+import shapes.Shape;
 
 public class ThreeDimensionalShape extends Shape {
 	public double volume;
+	protected Color shapeColor = new Color(0, 0, 0, 0.2);
 	
 	public ThreeDimensionalShape() {
-		this.numberOfDimensions = 3;
+		this.dimensionSize = 3;
 	}
 
 	public double getVolume() {

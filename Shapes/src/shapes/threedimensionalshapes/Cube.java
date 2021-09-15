@@ -5,9 +5,12 @@
  * Description: a standard geometric cube and volume method
  */
 
-package shapes;
+package shapes.threedimensionalshapes;
 
 import java.util.ArrayList;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
 
 public class Cube extends ThreeDimensionalShape {
 	public double length;
@@ -35,5 +38,11 @@ public class Cube extends ThreeDimensionalShape {
 
 	public double getVolume() {
 		return Math.pow(length, 3);
+	}
+	
+	@Override
+	public Group getFXGroup() {
+		Node element = new javafx.scene.shape.Box(length, length, length);
+		return new Group(element);
 	}
 }

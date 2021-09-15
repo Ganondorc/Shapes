@@ -5,7 +5,7 @@
  * Description: a simple two dimensional triangle
  */
 
-package shapes;
+package shapes.twodimensionalshapes;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +49,6 @@ public class Triangle extends TwoDimensionalShape {
 
 	private ArrayList<Point> trianglePoints() {
 		double angle = Math.acos(-(Math.pow(a, 2) - Math.pow(b, 2) - Math.pow(c, 2)) / (2 * b * c));
-
 		ArrayList<Point> p = new ArrayList<Point>(3);
 
 		Point p0 = new Point(0, 0);

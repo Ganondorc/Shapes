@@ -5,7 +5,7 @@
  * Description: used to restrict jtext elements to a double between min and max
  */
 
-package shapes;
+package shapes.utility;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -13,7 +13,6 @@ import javax.swing.text.DocumentFilter;
 
 
 public class DoubleFilter extends DocumentFilter {
-	
 	private double min, max;
 	
 	public DoubleFilter(double min, double max) {
@@ -22,16 +21,16 @@ public class DoubleFilter extends DocumentFilter {
 	}
 	
 	@Override
-	public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+	public void insertString(FilterBypass filterBypass, int offset, String string, AttributeSet attrSet)
 			throws BadLocationException {
 
-		Document doc = fb.getDocument();
+		Document doc = filterBypass.getDocument();
 		StringBuilder sb = new StringBuilder();
 		sb.append(doc.getText(0, doc.getLength()));
 		sb.insert(offset, string);
 
 		if (test(sb.toString())) {
-			super.insertString(fb, offset, string, attr);
+			super.insertString(filterBypass, offset, string, attrSet);
 		} else {
 			// warn the user and don't allow the insert
 		}
@@ -51,16 +50,16 @@ public class DoubleFilter extends DocumentFilter {
 	}
 
 	@Override
-	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+	public void replace(FilterBypass filterBypass, int offset, int length, String text, AttributeSet attrSet)
 			throws BadLocationException {
 
-		Document doc = fb.getDocument();
+		Document doc = filterBypass.getDocument();
 		StringBuilder sb = new StringBuilder();
 		sb.append(doc.getText(0, doc.getLength()));
 		sb.replace(offset, offset + length, text);
 
 		if (test(sb.toString())) {
-			super.replace(fb, offset, length, text, attrs);
+			super.replace(filterBypass, offset, length, text, attrSet);
 		} else {
 			// warn the user and don't allow the insert
 		}
@@ -68,14 +67,14 @@ public class DoubleFilter extends DocumentFilter {
 	}
 
 	@Override
-	public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-		Document doc = fb.getDocument();
+	public void remove(FilterBypass filterBypass, int offset, int length) throws BadLocationException {
+		Document doc = filterBypass.getDocument();
 		StringBuilder sb = new StringBuilder();
 		sb.append(doc.getText(0, doc.getLength()));
 		sb.delete(offset, offset + length);
 
 		if (test(sb.toString())) {
-			super.remove(fb, offset, length);
+			super.remove(filterBypass, offset, length);
 		} else {
 			// warn the user and don't allow the insert
 		}

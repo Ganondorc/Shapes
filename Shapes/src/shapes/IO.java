@@ -12,10 +12,13 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -26,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.PlainDocument;
 
@@ -33,10 +37,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
+import shapes.utility.DoubleFilter;
+import shapes.utility.PaintedShape;
+import shapes.utility.SimpleFocusTraversalPolicy;
 
 public class IO extends Application {
-	final String[] TwoDShapes = { "Circle", "Rectangle", "Square", "Triangle" };
-	final String[] ThreeDShapes = { "Cone", "Cube", "Cylinder", "Sphere", "Torus" };
 	private static JFrame frame = new JFrame("Shapes");
 	private final JPanel content = new JPanel();
 
@@ -47,6 +52,7 @@ public class IO extends Application {
 	private static void createGUI() {
 		// Create and set up the window.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 
 		// Create 1and set up the content pane.
 		JComponent newContentPane = new IO().getContent();
@@ -61,87 +67,93 @@ public class IO extends Application {
 
 	@SuppressWarnings("serial")
 	public IO() {
-		GroupLayout layout = new GroupLayout(content);
-		content.setLayout(layout);
+		GroupLayout layout = new GroupLayout(getContent());
+		getContent().setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		final JPanel welcome = new JPanel();
-		welcome.setLayout(new BoxLayout(welcome, BoxLayout.Y_AXIS));
+		final JPanel welcomePanel = new JPanel();
+		welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.Y_AXIS));
 		final JLabel welcomeLabel = new JLabel("Welcome to the Shapes program. Select a shape below to begin.");
-		final JLabel extraInfo = new JLabel("If the shape is 3D, you can click the shape to rotate it randomly.");
-		welcome.add(welcomeLabel);
-		welcome.add(extraInfo);
-		
-		JPanel dropdown = new JPanel();
-		String[] shapes = Stream.concat(Arrays.stream(TwoDShapes), Arrays.stream(ThreeDShapes)).toArray(String[]::new);
-		final JComboBox<String> shapesDropdown = new JComboBox<String>(shapes);
-		dropdown.add(shapesDropdown);
-		
-		final JPanel params = new JPanel();
-		final JPanel drawingArea = new JPanel();
-		final JPanel details = new JPanel();
-		
+		final JLabel extraInfoLabel = new JLabel("If the shape is 3D, you can click the shape to rotate it randomly.");
+		welcomePanel.add(welcomeLabel);
+		welcomePanel.add(extraInfoLabel);
+
+		JPanel dropdownPanel = new JPanel();
+		List<String> shapes = Stream.concat(Shape.TwoDShapes.stream(), Shape.ThreeDShapes.stream())
+				.collect(Collectors.toList());
+		final JComboBox<String> shapesDropdown = new JComboBox<String>();
+		shapes.stream().forEach(s -> shapesDropdown.addItem(s));
+		dropdownPanel.add(shapesDropdown);
+
+		final JPanel paramsPanel = new JPanel();
+		final JPanel drawingAreaPanel = new JPanel();
+		final JPanel detailsPanel = new JPanel();
+
 		layout.setHorizontalGroup(layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(welcome)
-						.addComponent(dropdown).addComponent(params).addComponent(drawingArea).addComponent(details)));
-		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(welcome).addComponent(dropdown)
-				.addComponent(params).addComponent(drawingArea).addComponent(details));
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(welcomePanel)
+						.addComponent(dropdownPanel).addComponent(paramsPanel).addComponent(drawingAreaPanel)
+						.addComponent(detailsPanel)));
+		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(welcomePanel).addComponent(dropdownPanel)
+				.addComponent(paramsPanel).addComponent(drawingAreaPanel).addComponent(detailsPanel));
 
 		shapesDropdown.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String selection = (String) shapesDropdown.getSelectedItem();
 				Shape selectedShape = new Shape().getInstance(selection);
-				params.removeAll();
-				params.setLayout(new GridLayout(selectedShape.paramSize + 1, 1));
-				ArrayList<Component> tabbers = new ArrayList<Component>();
+				ArrayList<Component> tabbersList = new ArrayList<Component>();
+
+				paramsPanel.removeAll();
+				paramsPanel.setLayout(new GridLayout(selectedShape.paramSize + 1, 1));
 				for (int i = 1; i <= selectedShape.paramSize; i++) {
-					JPanel param = new JPanel();
-					param.add(new JLabel(selectedShape.paramNames.get(i - 1) + " :"));
+					JPanel paramPanel = new JPanel();
+					paramPanel.add(new JLabel(selectedShape.paramNames.get(i - 1) + " :"));
 					JTextField field = new JTextField();
 					field.setColumns(5);
-					tabbers.add(field);
-					field.setToolTipText("Enter a double between 0.0 and " + Double.toString((PaintedShape.size - 5) * selectedShape.maxMultiplier));
+					tabbersList.add(field);
+					field.setToolTipText("Enter a double between 0.0 and "
+							+ Double.toString((PaintedShape.size - 5) * selectedShape.maxMultiplier));
 					PlainDocument doc = (PlainDocument) field.getDocument();
 					doc.setDocumentFilter(new DoubleFilter(0, (PaintedShape.size - 5) * selectedShape.maxMultiplier));
-					param.add(field);
-					params.add(param);
+					paramPanel.add(field);
+					paramsPanel.add(paramPanel);
 				}
-				tabbers.get(0).requestFocus();
-				JButton go = new JButton("Go");
-				go.addActionListener(new ActionListener() {
+
+				// tab to first element
+				tabbersList.get(0).requestFocus();
+
+				JButton goBtn = new JButton("Go");
+				goBtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						final JPanel drawing = new JPanel();
-						ArrayList<Double> shapeParams = new ArrayList<Double>();
-						for (int i = 0; i < params.getComponentCount(); i++) {
-							if (params.getComponent(i).getClass().getSimpleName().equals("JPanel")) {
-								JTextField thisText = ((JTextField) ((JPanel) params.getComponent(i)).getComponent(1));
-								if (thisText.getText().equals("")) {
+						final JPanel drawingPanel = new JPanel();
+						ArrayList<Double> shapeParamsList = new ArrayList<Double>();
+						for (int i = 0; i < paramsPanel.getComponentCount(); i++) {
+							if (paramsPanel.getComponent(i).getClass().getSimpleName().equals("JPanel")) {
+								JTextField thisTextField = ((JTextField) ((JPanel) paramsPanel.getComponent(i))
+										.getComponent(1));
+								if (thisTextField.getText().equals("")) {
 									JOptionPane.showMessageDialog(frame, "Invalid input: empty parameter.");
 									return;
 								}
-								shapeParams.add(Double.parseDouble(thisText.getText()));
+								shapeParamsList.add(Double.parseDouble(thisTextField.getText()));
 							}
 						}
 						// boolean that tells us whether parameters were set successfully
-						System.out.println("Shape set parameters: " + selectedShape.setParameters(shapeParams));
+						selectedShape.setParameters(shapeParamsList);
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								boolean TwoD = false;
 								new JFXPanel(); // initializes JavaFX environment
-								if (selectedShape.getClass().getSuperclass().getSimpleName()
-										.equals("TwoDimensionalShape")) {
-									TwoD = true;
+								if (selectedShape.dimensionSize == 2) {
 									Component shapePanel = (Component) new PaintedShape(selectedShape).getPanel();
-									drawing.add(shapePanel);
+									drawingPanel.add(shapePanel);
 								} else {
 									JFXPanel shapePanel = (JFXPanel) new PaintedShape(selectedShape).getPanel();
 									Platform.runLater(() -> {
 										try {
 											SwingUtilities.invokeLater(() -> {
-												drawing.add(shapePanel);
+												drawingPanel.add(shapePanel);
 												frame.pack();
 											});
 
@@ -151,42 +163,43 @@ public class IO extends Application {
 
 									});
 								}
-								drawingArea.removeAll();
-								drawingArea.validate();
-								drawingArea.add(drawing);
-								String precursor = TwoD ? "Area: " : "Volume: ";
-								details.removeAll();
-								details.validate();
-								details.add(new JLabel(precursor + Double.toString(selectedShape.getAreaOrVolume())));
-								details.repaint();
-								drawingArea.repaint();
+								drawingAreaPanel.removeAll();
+								drawingAreaPanel.validate();
+								drawingAreaPanel.add(drawingPanel);
+								String precursor = (selectedShape.dimensionSize == 2) ? "Area: " : "Volume: ";
+								detailsPanel.removeAll();
+								detailsPanel.validate();
+								detailsPanel
+										.add(new JLabel(precursor + Double.toString(selectedShape.getAreaOrVolume())));
+								detailsPanel.repaint();
+								drawingAreaPanel.repaint();
 								frame.pack();
 								frame.setSize(new Dimension((int) (frame.getSize().getWidth()),
-										(int) (frame.getSize().getHeight() + PaintedShape.sizeDim.getHeight())));
+										(int) (frame.getSize().getHeight() + PaintedShape.size)));
 								frame.setLocationRelativeTo(null);
 							}
 						});
 					}
 				});
-				params.add(go);
-				
-				tabbers.add(go);
+				goBtn.setMnemonic('G');
+				paramsPanel.add(goBtn);
+				tabbersList.add(goBtn);
 				// have last text field activate go on enter pressed
-				((JTextField) tabbers.get(tabbers.size()-2)).addActionListener(new ActionListener() {
+				((JTextField) tabbersList.get(tabbersList.size() - 2)).addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						for(ActionListener a: go.getActionListeners()) {
-							 a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {
-								 //trigger go button
-						    });
+						for (ActionListener a : goBtn.getActionListeners()) {
+							a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {
+								// trigger go button
+							});
 						}
 					}
 				});
-				params.setFocusTraversalPolicy(new SimpleFocusTraversalPolicy(tabbers));
-				params.setFocusTraversalPolicyProvider(true);
-				params.setFocusCycleRoot(false);
-				
-				content.validate();
+				paramsPanel.setFocusTraversalPolicy(new SimpleFocusTraversalPolicy(tabbersList));
+				paramsPanel.setFocusTraversalPolicyProvider(true);
+				paramsPanel.setFocusCycleRoot(false);
+
+				getContent().validate();
 				frame.validate();
 				frame.pack();
 				frame.setLocationRelativeTo(null);
@@ -194,19 +207,40 @@ public class IO extends Application {
 		});
 
 		shapesDropdown.requestFocus();
-		for(ActionListener a: shapesDropdown.getActionListeners()) {
-		    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {
-		          // trigger shapesdropdown event to display initial circle (since it's first in dropdown) parameters
-		    });
-		}
 		
-		frame.add(content);
+		content.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "getPriorDropdown");
+		content.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "getSubsequentDropdown");
+		class upAction extends AbstractAction {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int i = shapesDropdown.getSelectedIndex();
+				shapesDropdown.setSelectedItem((i > 0) ? shapesDropdown.getItemAt(i-1) : shapesDropdown.getItemAt(i));
+		    }
+		}
+		class downAction extends AbstractAction {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int i = shapesDropdown.getSelectedIndex();
+				int max = shapesDropdown.getItemCount() - 1;
+				shapesDropdown.setSelectedItem((i < max) ? shapesDropdown.getItemAt(i+1) : shapesDropdown.getItemAt(i));
+		    }
+		}
+		content.getActionMap().put("getPriorDropdown", new upAction());
+		content.getActionMap().put("getSubsequentDropdown", new downAction());
+		shapesDropdown.setToolTipText("Page up to select previous element, down for next");
+		
+		for (ActionListener a : shapesDropdown.getActionListeners()) {
+			a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {
+				// trigger event to display first dropdown item parameters
+			});
+		}
+		frame.add(getContent());
 	}
 
 	public JPanel getContent() {
 		return content;
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		SwingUtilities.invokeLater(new Runnable() {

@@ -5,7 +5,7 @@
  * Description: a standard geometric rectangle and area method
  */
 
-package shapes;
+package shapes.twodimensionalshapes;
 import java.awt.Point;
 import java.util.ArrayList;
 

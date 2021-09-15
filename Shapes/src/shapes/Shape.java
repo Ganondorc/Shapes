@@ -6,14 +6,22 @@
  */
 
 package shapes;
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import javafx.scene.Group;
 
 public class Shape {
-	public int numberOfDimensions;
+	public int dimensionSize;
 	public int paramSize;
 	public ArrayList<String> paramNames = new ArrayList<String>();
 	public double maxMultiplier = 1.0;
+	protected Group group = null;
+	
+	final static List<String> TwoDShapes = Arrays.asList("Circle", "Rectangle", "Square", "Triangle");
+	final static List<String> ThreeDShapes = Arrays.asList("Cone", "Cube", "Cylinder", "Sphere", "Torus");
 	
 	public String getName() {
 		return this.getClass().getSimpleName();
@@ -23,19 +31,10 @@ public class Shape {
 		Class<?> shape;
 		Object instance = null;
 		try {
-			shape = Class.forName("shapes." + name);
+			String classString = "shapes." + (TwoDShapes.contains(name) ? "twodimensionalshapes." : "threedimensionalshapes.") + name;
+			shape = Class.forName(classString);
 			instance = shape.newInstance();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return (Shape) instance;
@@ -47,5 +46,13 @@ public class Shape {
 	
 	public double getAreaOrVolume() {
 		return 0;
+	}
+	
+	public ArrayList<Point> shapePoints() {
+		return null;
+	}
+	
+	public Group getFXGroup() {
+		return group;
 	}
 }

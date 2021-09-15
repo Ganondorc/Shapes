@@ -1,13 +1,13 @@
-package shapes;
-import java.awt.Point;
-import java.util.ArrayList;
-
 /*
  * Name: Michael Frake
  * Project: CMSC 335 Project 2
  * Date: Sep 14, 2021
  * Description: a standard geometric circle and area method
  */
+
+package shapes.twodimensionalshapes;
+import java.awt.Point;
+import java.util.ArrayList;
 
 public class Circle extends TwoDimensionalShape {
 	public double radius;
@@ -40,17 +40,13 @@ public class Circle extends TwoDimensionalShape {
 	private ArrayList<Point> circlePoints() {
 		final int size = 360;
 		ArrayList<Point> p = new ArrayList<Point>(size);
-		// Point center = new Point((int) radius, (int) radius);
-
+		
 		int x, y;
 		for (int i = 0; i < size; i++) {
 			x = (int) (radius * (Math.cos(((2 * Math.PI) / 360) * (i + (i * (360.0 / size))))));
 			y = (int) (radius * (Math.sin(((2 * Math.PI) / 360) * (i + (i * (360.0 / size))))));
 			p.add(new Point(x, y));
 		}
-		/*for (Point a : p)
-			a.translate(-center.x, -center.y);*/
-
 		return p;
 	}
 

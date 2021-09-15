@@ -5,8 +5,11 @@
  * Description: a simple 3d sphere
  */
 
-package shapes;
+package shapes.threedimensionalshapes;
 import java.util.ArrayList;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
 
 public class Sphere extends ThreeDimensionalShape {
 	public double radius;
@@ -36,4 +39,9 @@ public class Sphere extends ThreeDimensionalShape {
 		return Math.PI * Math.pow(radius, 3);
 	}
 	
+	@Override
+	public Group getFXGroup() {
+		Node element = new javafx.scene.shape.Sphere(radius, 32);
+		return new Group(element);
+	}
 }
